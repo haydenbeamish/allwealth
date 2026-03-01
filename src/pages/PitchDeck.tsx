@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   ChevronDown,
@@ -813,9 +814,16 @@ function WhySlide() {
             </div>
             <span className="text-white font-semibold text-xl tracking-tight">AllWealth</span>
           </div>
-          <p className="text-sm text-slate-400">
-            hayden@laserbeamcapital.com &nbsp;|&nbsp; allwealth.com.au
+          <p className="text-sm text-slate-400 mb-4">
+            Hayden Beamish
           </p>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold hover:from-teal-400 hover:to-teal-500 transition-all shadow-lg shadow-teal-500/25"
+          >
+            Go to Platform
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </motion.div>
       </div>
     </SlideWrapper>
