@@ -1,4 +1,5 @@
 import { Bell, Menu, Search } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import RoleSwitcher from './RoleSwitcher'
 import { useRole } from '@/hooks/useRole'
 
@@ -8,6 +9,7 @@ interface HeaderProps {
 
 export default function Header({ onMenuToggle }: HeaderProps) {
   const { role } = useRole()
+  const navigate = useNavigate()
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-slate-200">
@@ -46,7 +48,7 @@ export default function Header({ onMenuToggle }: HeaderProps) {
           </button>
 
           {/* User avatar */}
-          <button className="flex items-center gap-2" aria-label="User profile">
+          <button className="flex items-center gap-2" aria-label="Pitch deck" onClick={() => navigate('/deck')}>
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center">
               <span className="text-white text-xs font-semibold">HB</span>
             </div>
