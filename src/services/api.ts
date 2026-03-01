@@ -71,12 +71,14 @@ export async function streamSSE(
 export const marketsApi = {
   getFull: async () => {
     const raw = await fetchJSON<Record<string, unknown>>('/markets/full')
+    // Unwrap { success: true, data: { categories: {...} } } envelope
+    const payload = (raw.data && typeof raw.data === 'object') ? raw.data as Record<string, unknown> : raw
     // Handle both { categories: {...} } and flat { "Global Markets": [...], ... } shapes
-    if (raw.categories && typeof raw.categories === 'object') {
-      return raw as { categories: Record<string, unknown[]> }
+    if (payload.categories && typeof payload.categories === 'object') {
+      return { categories: payload.categories as Record<string, unknown[]> }
     }
     // If the response IS the categories directly (no wrapper)
-    return { categories: raw as Record<string, unknown[]> }
+    return { categories: payload as Record<string, unknown[]> }
   },
   getSummary: async () => {
     const res = await fetch(`${API_BASE}/markets/summary`, {
