@@ -188,16 +188,20 @@ export default function CompanyAnalysis() {
       'full',
       'gpt-4o',
       (event) => {
-        if (event.type === 'content' || event.type === 'text') {
-          const text = typeof event.data === 'string' ? event.data : (event.data as { text?: string })?.text || ''
+        if (event.type === 'content') {
+          // API sends { type: "content", text: "..." }
+          const text = typeof event.text === 'string' ? event.text : ''
           setAnalysisText((prev) => prev + text)
           setAnalysisProgress((prev) => Math.min(prev + 1, 95))
         }
         if (event.type === 'recommendation') {
-          setRecommendation(String(event.data))
+          // API sends { type: "recommendation", data: { ... } }
+          const rec = event.data as Record<string, unknown> | undefined
+          setRecommendation(rec ? String(rec.recommendation || rec) : null)
         }
         if (event.type === 'progress') {
-          setAnalysisProgress(Number(event.data) || 0)
+          // API sends { type: "progress", progress: 25, step: "...", detail: "..." }
+          setAnalysisProgress(Number(event.progress) || 0)
         }
       },
       () => {

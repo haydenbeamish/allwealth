@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { cn } from '@/lib/utils'
+import { marketsApi } from '@/services/api'
 
 interface TickerItem {
   name: string
@@ -33,12 +34,10 @@ export default function TickerTape() {
   useEffect(() => {
     const fetchTickers = async () => {
       try {
-        const res = await fetch('/api/markets/full')
-        if (!res.ok) return
-        const data = await res.json()
-        const globalItems = data?.categories?.['Global Markets'] || data?.['Global Markets'] || []
+        const data = await marketsApi.getFull()
+        const globalItems = data?.categories?.['Global Markets'] || []
         if (Array.isArray(globalItems) && globalItems.length > 0) {
-          const mapped: TickerItem[] = globalItems.slice(0, 14).map((item: Record<string, unknown>) => ({
+          const mapped: TickerItem[] = (globalItems as Record<string, unknown>[]).slice(0, 14).map((item) => ({
             name: item.name as string || item.ticker as string,
             price: Number(item.lastPrice) || 0,
             change: Number(item.chgDay) || 0,
