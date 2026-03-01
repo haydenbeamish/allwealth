@@ -214,7 +214,7 @@ export default function MarketDashboard() {
   const [summary, setSummary] = useState<string>('')
   const [activeTab, setActiveTab] = useState(CATEGORIES[0].key)
   const [loading, setLoading] = useState(true)
-  const [loadError, setLoadError] = useState(false)
+  const [loadError, setLoadError] = useState<string | false>(false)
   const [summaryLoading, setSummaryLoading] = useState(true)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [refreshing, setRefreshing] = useState(false)
@@ -224,13 +224,18 @@ export default function MarketDashboard() {
     try {
       if (isRefresh) setRefreshing(true)
       const data = await marketsApi.getFull()
-      setCategories(data.categories as Record<string, MarketItem[]>)
+      const cats = data.categories as Record<string, MarketItem[]>
+      if (!cats || Object.keys(cats).length === 0) {
+        throw new Error('API returned empty categories')
+      }
+      setCategories(cats)
       setLastUpdated(new Date())
       setLoading(false)
       setLoadError(false)
-    } catch {
+    } catch (err) {
+      console.error('[MarketDashboard] fetchMarkets failed:', err)
       setLoading(false)
-      if (!isRefresh) setLoadError(true)
+      if (!isRefresh) setLoadError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
       setRefreshing(false)
     }
@@ -315,7 +320,9 @@ export default function MarketDashboard() {
             <AlertTriangle className="w-6 h-6 text-red-500" />
           </div>
           <h3 className="text-lg font-semibold text-slate-900 mb-1">Unable to load market data</h3>
-          <p className="text-sm text-slate-500 mb-4">Please check your connection and try again.</p>
+          <p className="text-sm text-slate-500 mb-4">
+            {typeof loadError === 'string' ? loadError : 'Please check your connection and try again.'}
+          </p>
           <button
             onClick={() => { setLoading(true); setLoadError(false); fetchMarkets() }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
