@@ -345,7 +345,7 @@ export default function FinancialPlans() {
                       tickFormatter={(v) => formatCurrency(v, 'AUD', true)}
                     />
                     <Tooltip
-                      formatter={(value: any, name: any) => [value != null ? formatCurrency(Number(value)) : '', String(name || '')]}
+                      formatter={(value, name) => [value != null ? formatCurrency(Number(value)) : '', String(name || '')]}
                       contentStyle={{
                         borderRadius: '0.75rem',
                         border: '1px solid #E2E8F0',

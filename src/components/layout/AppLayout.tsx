@@ -1,20 +1,26 @@
-import { Outlet } from 'react-router-dom'
+import { useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import TickerTape from './TickerTape'
+import MobileNav from './MobileNav'
 
 export default function AppLayout() {
   const location = useLocation()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex min-h-screen bg-background">
+      <a href="#main-content" className="skip-to-content">
+        Skip to content
+      </a>
       <Sidebar />
+      <MobileNav open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         <TickerTape />
-        <Header />
-        <main className="flex-1 overflow-y-auto">
+        <Header onMenuToggle={() => setMobileMenuOpen(true)} />
+        <main id="main-content" className="flex-1 overflow-y-auto" role="main">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -22,7 +28,7 @@ export default function AppLayout() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="p-6"
+              className="p-4 sm:p-6"
             >
               <Outlet />
             </motion.div>

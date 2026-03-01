@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   Search,
@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { cn, formatCurrency } from '@/lib/utils'
+import { useClickOutside } from '@/hooks/useClickOutside'
 import AnimatedNumber from '@/components/shared/AnimatedNumber'
 import { mockBankAccounts } from '@/data/mockBankAccounts'
 import { mockTransactions } from '@/data/mockTransactions'
@@ -67,6 +68,7 @@ export default function BankFeeds() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
+  const dropdownRef = useClickOutside<HTMLDivElement>(useCallback(() => setShowCategoryDropdown(false), []), showCategoryDropdown)
 
   const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0)
 
@@ -88,7 +90,10 @@ export default function BankFeeds() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-2xl font-bold text-slate-900">Bank Feeds</h1>
+        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <Building2 className="w-7 h-7 text-teal-600" />
+          Bank Feeds
+        </h1>
         <p className="text-sm text-slate-500 mt-1">Connected accounts and transactions</p>
       </motion.div>
 
@@ -167,7 +172,7 @@ export default function BankFeeds() {
               className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-slate-50"
             />
           </div>
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
               className="flex items-center gap-2 px-3 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"

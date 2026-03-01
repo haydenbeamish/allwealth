@@ -6,6 +6,7 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  AlertTriangle,
   Radio,
   Sparkles,
   Globe,
@@ -127,9 +128,15 @@ function MarketTable({ items }: { items: MarketItem[] }) {
       prevPricesRef.current[item.ticker] = item.lastPrice
     }
     if (Object.keys(newFlash).length > 0) {
-      setFlashMap(newFlash)
+      // Defer to avoid synchronous setState in effect body
+      const raf = requestAnimationFrame(() => {
+        setFlashMap(newFlash)
+      })
       const timer = setTimeout(() => setFlashMap({}), 900)
-      return () => clearTimeout(timer)
+      return () => {
+        cancelAnimationFrame(raf)
+        clearTimeout(timer)
+      }
     }
   }, [items])
 
@@ -207,6 +214,7 @@ export default function MarketDashboard() {
   const [summary, setSummary] = useState<string>('')
   const [activeTab, setActiveTab] = useState(CATEGORIES[0].key)
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [summaryLoading, setSummaryLoading] = useState(true)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [refreshing, setRefreshing] = useState(false)
@@ -219,9 +227,10 @@ export default function MarketDashboard() {
       setCategories(data.categories as Record<string, MarketItem[]>)
       setLastUpdated(new Date())
       setLoading(false)
-    } catch (err) {
-      console.error('Failed to fetch markets:', err)
+      setLoadError(false)
+    } catch {
       setLoading(false)
+      if (!isRefresh) setLoadError(true)
     } finally {
       setRefreshing(false)
     }
@@ -231,8 +240,8 @@ export default function MarketDashboard() {
     try {
       const data = await marketsApi.getSummary()
       setSummary(data.summary || '')
-    } catch (err) {
-      console.error('Failed to fetch summary:', err)
+    } catch {
+      // Summary is non-critical; silently degrade
     } finally {
       setSummaryLoading(false)
     }
@@ -294,6 +303,28 @@ export default function MarketDashboard() {
           </button>
         </div>
       </motion.div>
+
+      {/* Error State */}
+      {loadError && !loading && Object.keys(categories).length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-xl border border-red-200 shadow-sm p-8 text-center"
+        >
+          <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center mx-auto mb-3">
+            <AlertTriangle className="w-6 h-6 text-red-500" />
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900 mb-1">Unable to load market data</h3>
+          <p className="text-sm text-slate-500 mb-4">Please check your connection and try again.</p>
+          <button
+            onClick={() => { setLoading(true); setLoadError(false); fetchMarkets() }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Try Again
+          </button>
+        </motion.div>
+      )}
 
       {/* AI Market Summary */}
       <motion.div

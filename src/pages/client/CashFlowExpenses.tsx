@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
+  ArrowUpDown,
   DollarSign,
   CreditCard,
   PiggyBank,
@@ -29,13 +30,19 @@ import { monthlyExpenses, expenseCategories } from '@/data/mockExpenses'
 
 const months = monthlyExpenses.map((m) => m.month)
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function BarTooltip({ active, payload, label }: any) {
+interface TooltipPayloadItem {
+  name: string
+  value: number
+  color: string
+  payload: Record<string, unknown>
+}
+
+function BarTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadItem[]; label?: string }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3">
         <p className="text-xs text-slate-500 mb-2 font-medium">{label}</p>
-        {payload.map((entry: { name: string; value: number; color: string }) => (
+        {payload.map((entry) => (
           <div key={entry.name} className="flex items-center gap-2 text-xs">
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
             <span className="text-slate-600">{entry.name}:</span>
@@ -48,14 +55,13 @@ function BarTooltip({ active, payload, label }: any) {
   return null
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ExpensePieTooltip({ active, payload }: any) {
+function ExpensePieTooltip({ active, payload }: { active?: boolean; payload?: TooltipPayloadItem[] }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3">
         <p className="text-xs text-slate-500 mb-1">{payload[0].name}</p>
         <p className="text-sm font-bold text-slate-900">{formatCurrency(payload[0].value)}</p>
-        <p className="text-xs text-slate-400">{payload[0].payload.percentage}% of expenses</p>
+        <p className="text-xs text-slate-400">{String(payload[0].payload.percentage)}% of expenses</p>
       </div>
     )
   }
@@ -69,15 +75,15 @@ export default function CashFlowExpenses() {
   const prevMonth = selectedMonthIdx > 0 ? monthlyExpenses[selectedMonthIdx - 1] : null
   const savingsRate = currentMonth ? (currentMonth.savings / currentMonth.income) * 100 : 0
 
-  const prevMonthExpenses = prevMonth
-    ? expenseCategories.map((cat) => {
-        const variance = (Math.random() - 0.4) * 0.2
-        return {
-          ...cat,
-          prevAmount: Math.round(cat.amount * (1 + variance)),
-        }
-      })
-    : expenseCategories.map((cat) => ({ ...cat, prevAmount: cat.amount }))
+  // Deterministic "variance" per category based on index rather than Math.random()
+  const prevMonthExpenses = useMemo(() => {
+    if (!prevMonth) return expenseCategories.map((cat) => ({ ...cat, prevAmount: cat.amount }))
+    const variances = [0.08, -0.05, 0.12, -0.03, 0.06, -0.09, 0.04, -0.07, 0.1, -0.02]
+    return expenseCategories.map((cat, i) => ({
+      ...cat,
+      prevAmount: Math.round(cat.amount * (1 + (variances[i % variances.length]))),
+    }))
+  }, [prevMonth])
 
   const goBack = () => setSelectedMonthIdx((p) => Math.max(0, p - 1))
   const goForward = () => setSelectedMonthIdx((p) => Math.min(months.length - 1, p + 1))
@@ -90,7 +96,10 @@ export default function CashFlowExpenses() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-2xl font-bold text-slate-900">Cash Flow & Expenses</h1>
+        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <ArrowUpDown className="w-7 h-7 text-teal-600" />
+          Cash Flow & Expenses
+        </h1>
         <p className="text-sm text-slate-500 mt-1">Track your income, spending, and savings</p>
       </motion.div>
 

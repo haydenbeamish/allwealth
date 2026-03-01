@@ -23,8 +23,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { cn } from '@/lib/utils'
-import { formatCurrency } from '@/lib/utils'
+import { cn, formatCurrency } from '@/lib/utils'
 import AnimatedNumber from '@/components/shared/AnimatedNumber'
 import { mockWealthBreakdown, mockWealthHistory } from '@/data/mockWealth'
 
@@ -66,8 +65,14 @@ const wealthChartData = mockWealthHistory.map((pt) => ({
   value: pt.value,
 }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipPayloadItem {
+  name: string
+  value: number
+  color: string
+  payload: Record<string, unknown>
+}
+
+function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadItem[]; label?: string }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3">
@@ -79,14 +84,13 @@ function CustomTooltip({ active, payload, label }: any) {
   return null
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function PieTooltip({ active, payload }: any) {
+function PieTooltip({ active, payload }: { active?: boolean; payload?: TooltipPayloadItem[] }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3">
         <p className="text-xs text-slate-500 mb-1">{payload[0].name}</p>
         <p className="text-sm font-bold text-slate-900">{formatCurrency(payload[0].value)}</p>
-        <p className="text-xs text-slate-400">{payload[0].payload.percent}% of total</p>
+        <p className="text-xs text-slate-400">{String(payload[0].payload.percent)}% of total</p>
       </div>
     )
   }

@@ -1,15 +1,6 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { useState, useCallback, type ReactNode } from 'react'
 import type { Role } from '@/types'
-
-interface RoleContextType {
-  role: Role
-  setRole: (role: Role) => void
-  toggleRole: () => void
-  selectedClientId: string
-  setSelectedClientId: (id: string) => void
-}
-
-const RoleContext = createContext<RoleContextType | null>(null)
+import { RoleContext } from './roleContextDef'
 
 export function RoleProvider({ children }: { children: ReactNode }) {
   const [role, setRoleState] = useState<Role>(() => {
@@ -37,10 +28,4 @@ export function RoleProvider({ children }: { children: ReactNode }) {
       {children}
     </RoleContext.Provider>
   )
-}
-
-export function useRole() {
-  const ctx = useContext(RoleContext)
-  if (!ctx) throw new Error('useRole must be used within RoleProvider')
-  return ctx
 }

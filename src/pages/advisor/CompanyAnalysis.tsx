@@ -4,7 +4,6 @@ import {
   Search,
   Building2,
   TrendingUp,
-  TrendingDown,
   Play,
   Loader2,
   BarChart3,
@@ -17,7 +16,7 @@ import {
   Landmark,
   X,
 } from 'lucide-react'
-import { cn, formatMarketCap, formatPercent, formatPrice } from '@/lib/utils'
+import { cn, formatMarketCap, formatPercent } from '@/lib/utils'
 import { stockApi, analysisApi } from '@/services/api'
 import { CardSkeleton } from '@/components/shared/SkeletonLoader'
 import type { QuickSummary } from '@/types'
@@ -126,8 +125,7 @@ export default function CompanyAnalysis() {
     try {
       const data = (await stockApi.quickSummary(ticker)) as QuickSummary
       setSnapshot(data)
-    } catch (err) {
-      console.error('Failed to fetch snapshot:', err)
+    } catch {
       setSnapshot(null)
     } finally {
       setSnapshotLoading(false)
@@ -206,8 +204,7 @@ export default function CompanyAnalysis() {
         setAnalysisRunning(false)
         setAnalysisProgress(100)
       },
-      (err) => {
-        console.error('Analysis error:', err)
+      () => {
         setAnalysisRunning(false)
       }
     )

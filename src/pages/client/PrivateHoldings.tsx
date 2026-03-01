@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Home,
@@ -234,11 +234,26 @@ export default function PrivateHoldings() {
   const totalGain = totalValue - totalCost
   const totalGainPct = totalCost > 0 ? (totalGain / totalCost) * 100 : 0
 
-  const grouped = typeOrder.reduce<Record<string, PrivateHolding[]>>((acc, type) => {
+  const grouped = useMemo(() => typeOrder.reduce<Record<string, PrivateHolding[]>>((acc, type) => {
     const items = holdings.filter((h) => h.type === type)
     if (items.length > 0) acc[type] = items
     return acc
-  }, {})
+  }, {}), [holdings])
+
+  // Pre-compute animation delays to avoid mutating during render
+  const delayMap = useMemo(() => {
+    const map = new Map<string, number>()
+    let delay = 0.15
+    for (const type of typeOrder) {
+      const items = grouped[type]
+      if (!items) continue
+      for (const h of items) {
+        delay += 0.05
+        map.set(h.id, delay)
+      }
+    }
+    return map
+  }, [grouped])
 
   const handleSave = () => {
     if (!newHolding.name || !newHolding.value) return
@@ -255,8 +270,6 @@ export default function PrivateHoldings() {
     setShowModal(false)
     setNewHolding({ type: 'Property', name: '', value: '', purchaseDate: '' })
   }
-
-  let globalDelay = 0.15
 
   return (
     <div className="space-y-6">
@@ -331,7 +344,7 @@ export default function PrivateHoldings() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: globalDelay }}
+              transition={{ duration: 0.3, delay: 0.15 }}
               className="flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
@@ -345,16 +358,16 @@ export default function PrivateHoldings() {
             </motion.div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {items.map((h) => {
-                globalDelay += 0.05
+                const d = delayMap.get(h.id) ?? 0.2
                 switch (type) {
                   case 'Property':
-                    return <PropertyCard key={h.id} holding={h} delay={globalDelay} />
+                    return <PropertyCard key={h.id} holding={h} delay={d} />
                   case 'Private Equity':
-                    return <PECard key={h.id} holding={h} delay={globalDelay} />
+                    return <PECard key={h.id} holding={h} delay={d} />
                   case 'Collectible':
-                    return <CollectibleCard key={h.id} holding={h} delay={globalDelay} />
+                    return <CollectibleCard key={h.id} holding={h} delay={d} />
                   case 'Business':
-                    return <BusinessCard key={h.id} holding={h} delay={globalDelay} />
+                    return <BusinessCard key={h.id} holding={h} delay={d} />
                   default:
                     return null
                 }

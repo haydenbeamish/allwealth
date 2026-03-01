@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useRole } from './context/RoleContext'
+import { useRole } from './hooks/useRole'
 import AppLayout from './components/layout/AppLayout'
+import NotFound from './pages/NotFound'
 
 // Advisor pages
 import MarketDashboard from './pages/advisor/MarketDashboard'
@@ -46,8 +47,8 @@ export default function App() {
         <Route path="/client/tax" element={<TaxEstimates />} />
         <Route path="/client/holdings" element={<PrivateHoldings />} />
 
-        {/* Catch-all */}
-        <Route path="*" element={<RoleRedirect />} />
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )
