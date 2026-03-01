@@ -1,4 +1,6 @@
-const API_BASE = '/api'
+// In production (GitHub Pages), VITE_API_URL points directly to the backend.
+// In development, the Vite proxy handles /api → laserbeamcapital.com.
+const API_BASE = import.meta.env.VITE_API_URL || '/api'
 
 function getHeaders(extra?: Record<string, string>): Record<string, string> {
   const headers: Record<string, string> = {
