@@ -1,30 +1,29 @@
 export type Role = 'advisor' | 'client'
 
 export interface MarketItem {
-  ticker: string
   name: string
-  category: string
-  lastPrice: number
-  chgDay: number
-  chgMonth: number
-  chgQtr: number
-  chgYear: number
-  pxVs10d: number | null
-  pxVs20d: number | null
-  pxVs100d?: number | null
-  pxVs200d: number | null
-  tradingViewSymbol?: string
-}
-
-export interface MarketCategory {
-  name: string
-  items: MarketItem[]
+  price: number
+  change1D: number
+  change1M?: number
+  change1Q?: number
+  change1Y?: number
+  vs10D?: number
+  vs20D?: number
+  vs200D?: number
+  category?: string
+  categoryNotes?: string
 }
 
 export interface MarketsData {
-  categories: Record<string, MarketItem[]>
-  summary?: string
-  lastUpdated?: string
+  globalMarkets: MarketItem[]
+  futures: MarketItem[]
+  commodities: MarketItem[]
+  usaThematics: MarketItem[]
+  usaSectors: MarketItem[]
+  usaEqualWeight: MarketItem[]
+  asxSectors: MarketItem[]
+  forex: MarketItem[]
+  lastUpdated: string
 }
 
 export interface QuickSummary {

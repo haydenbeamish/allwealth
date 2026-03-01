@@ -22,29 +22,29 @@ import { cn, formatPrice, formatPercent } from '@/lib/utils'
 import { useSortable } from '@/hooks/useSortable'
 import { marketsApi } from '@/services/api'
 import { TableSkeleton, CardSkeleton } from '@/components/shared/SkeletonLoader'
-import type { MarketItem } from '@/types'
+import type { MarketItem, MarketsData } from '@/types'
 
 const CATEGORIES = [
-  { key: 'Global Markets', label: 'Global Markets', icon: Globe },
-  { key: 'Futures', label: 'Futures', icon: TrendingUp },
-  { key: 'Commodities', label: 'Commodities', icon: Wheat },
-  { key: 'USA Thematics', label: 'USA Thematics', icon: Flame },
-  { key: 'USA Sectors', label: 'USA Sectors', icon: Building2 },
-  { key: 'USA Equal Weight Sectors', label: 'USA EW Sectors', icon: Scale },
-  { key: 'ASX Sectors', label: 'ASX Sectors', icon: Flag },
-  { key: 'Forex', label: 'Forex', icon: DollarSign },
+  { key: 'globalMarkets' as const, label: 'Global Markets', icon: Globe },
+  { key: 'futures' as const, label: 'Futures', icon: TrendingUp },
+  { key: 'commodities' as const, label: 'Commodities', icon: Wheat },
+  { key: 'usaThematics' as const, label: 'USA Thematics', icon: Flame },
+  { key: 'usaSectors' as const, label: 'USA Sectors', icon: Building2 },
+  { key: 'usaEqualWeight' as const, label: 'USA EW Sectors', icon: Scale },
+  { key: 'asxSectors' as const, label: 'ASX Sectors', icon: Flag },
+  { key: 'forex' as const, label: 'Forex', icon: DollarSign },
 ]
 
 const COLUMNS = [
   { key: 'name', label: 'Name', align: 'left' as const },
-  { key: 'lastPrice', label: 'Price', align: 'right' as const },
-  { key: 'chgDay', label: '1D%', align: 'right' as const },
-  { key: 'chgMonth', label: '1M%', align: 'right' as const },
-  { key: 'chgQtr', label: '1Q%', align: 'right' as const },
-  { key: 'chgYear', label: '1Y%', align: 'right' as const },
-  { key: 'pxVs10d', label: 'vs 10D', align: 'right' as const },
-  { key: 'pxVs20d', label: 'vs 20D', align: 'right' as const },
-  { key: 'pxVs200d', label: 'vs 200D', align: 'right' as const },
+  { key: 'price', label: 'Price', align: 'right' as const },
+  { key: 'change1D', label: '1D%', align: 'right' as const },
+  { key: 'change1M', label: '1M%', align: 'right' as const },
+  { key: 'change1Q', label: '1Q%', align: 'right' as const },
+  { key: 'change1Y', label: '1Y%', align: 'right' as const },
+  { key: 'vs10D', label: 'vs 10D', align: 'right' as const },
+  { key: 'vs20D', label: 'vs 20D', align: 'right' as const },
+  { key: 'vs200D', label: 'vs 200D', align: 'right' as const },
 ]
 
 function PercentCell({ value, flash }: { value: number | null; flash?: 'up' | 'down' | null }) {
@@ -121,11 +121,11 @@ function MarketTable({ items }: { items: MarketItem[] }) {
   useEffect(() => {
     const newFlash: Record<string, 'up' | 'down'> = {}
     for (const item of items) {
-      const prev = prevPricesRef.current[item.ticker]
-      if (prev !== undefined && prev !== item.lastPrice) {
-        newFlash[item.ticker] = item.lastPrice > prev ? 'up' : 'down'
+      const prev = prevPricesRef.current[item.name]
+      if (prev !== undefined && prev !== item.price) {
+        newFlash[item.name] = item.price > prev ? 'up' : 'down'
       }
-      prevPricesRef.current[item.ticker] = item.lastPrice
+      prevPricesRef.current[item.name] = item.price
     }
     if (Object.keys(newFlash).length > 0) {
       // Defer to avoid synchronous setState in effect body
@@ -161,45 +161,42 @@ function MarketTable({ items }: { items: MarketItem[] }) {
         <tbody className="divide-y divide-slate-100">
           {sorted.map((item, i) => (
             <motion.tr
-              key={item.ticker}
+              key={item.name}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2, delay: i * 0.02 }}
               className={cn(
                 'hover:bg-slate-50/80 transition-colors',
-                flashMap[item.ticker] === 'up' && 'flash-positive',
-                flashMap[item.ticker] === 'down' && 'flash-negative'
+                flashMap[item.name] === 'up' && 'flash-positive',
+                flashMap[item.name] === 'down' && 'flash-negative'
               )}
             >
               <td className="px-3 py-2.5 text-left">
-                <div>
-                  <span className="font-semibold text-slate-900">{item.name}</span>
-                  <span className="ml-2 text-xs text-slate-400 font-mono">{item.ticker}</span>
-                </div>
+                <span className="font-semibold text-slate-900">{item.name}</span>
               </td>
               <td className="px-3 py-2.5 text-right font-semibold text-slate-900 tabular-nums">
-                {formatPrice(item.lastPrice)}
+                {formatPrice(item.price)}
               </td>
               <td className="px-3 py-2.5 text-right">
-                <PercentCell value={item.chgDay} flash={flashMap[item.ticker]} />
+                <PercentCell value={item.change1D} flash={flashMap[item.name]} />
               </td>
               <td className="px-3 py-2.5 text-right">
-                <PercentCell value={item.chgMonth} />
+                <PercentCell value={item.change1M ?? null} />
               </td>
               <td className="px-3 py-2.5 text-right">
-                <PercentCell value={item.chgQtr} />
+                <PercentCell value={item.change1Q ?? null} />
               </td>
               <td className="px-3 py-2.5 text-right">
-                <PercentCell value={item.chgYear} />
+                <PercentCell value={item.change1Y ?? null} />
               </td>
               <td className="px-3 py-2.5 text-right">
-                <PercentCell value={item.pxVs10d} />
+                <PercentCell value={item.vs10D ?? null} />
               </td>
               <td className="px-3 py-2.5 text-right">
-                <PercentCell value={item.pxVs20d} />
+                <PercentCell value={item.vs20D ?? null} />
               </td>
               <td className="px-3 py-2.5 text-right">
-                <PercentCell value={item.pxVs200d} />
+                <PercentCell value={item.vs200D ?? null} />
               </td>
             </motion.tr>
           ))}
@@ -210,7 +207,7 @@ function MarketTable({ items }: { items: MarketItem[] }) {
 }
 
 export default function MarketDashboard() {
-  const [categories, setCategories] = useState<Record<string, MarketItem[]>>({})
+  const [markets, setMarkets] = useState<MarketsData | null>(null)
   const [summary, setSummary] = useState<string>('')
   const [activeTab, setActiveTab] = useState(CATEGORIES[0].key)
   const [loading, setLoading] = useState(true)
@@ -224,11 +221,7 @@ export default function MarketDashboard() {
     try {
       if (isRefresh) setRefreshing(true)
       const data = await marketsApi.getFull()
-      const cats = data.categories as Record<string, MarketItem[]>
-      if (!cats || Object.keys(cats).length === 0) {
-        throw new Error('API returned empty categories')
-      }
-      setCategories(cats)
+      setMarkets(data)
       setLastUpdated(new Date())
       setLoading(false)
       setLoadError(false)
@@ -262,12 +255,17 @@ export default function MarketDashboard() {
   }, [fetchMarkets, fetchSummary])
 
   const currentItems = useMemo(() => {
-    return (categories[activeTab] || []) as MarketItem[]
-  }, [categories, activeTab])
+    if (!markets) return []
+    return (markets[activeTab] || []) as MarketItem[]
+  }, [markets, activeTab])
 
   const availableTabs = useMemo(() => {
-    return CATEGORIES.filter((cat) => categories[cat.key] && (categories[cat.key] as MarketItem[]).length > 0)
-  }, [categories])
+    if (!markets) return []
+    return CATEGORIES.filter((cat) => {
+      const items = markets[cat.key]
+      return items && items.length > 0
+    })
+  }, [markets])
 
   return (
     <div className="space-y-6">
@@ -310,7 +308,7 @@ export default function MarketDashboard() {
       </motion.div>
 
       {/* Error State */}
-      {loadError && !loading && Object.keys(categories).length === 0 && (
+      {loadError && !loading && !markets && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -388,14 +386,14 @@ export default function MarketDashboard() {
                 >
                   <Icon className="w-4 h-4" />
                   {cat.label}
-                  {categories[cat.key] && (
+                  {markets?.[cat.key] && (
                     <span
                       className={cn(
                         'text-xs px-1.5 py-0.5 rounded-full',
                         isActive ? 'bg-teal-500/40 text-white' : 'bg-slate-100 text-slate-500'
                       )}
                     >
-                      {(categories[cat.key] as MarketItem[]).length}
+                      {markets[cat.key].length}
                     </span>
                   )}
                 </button>
@@ -442,7 +440,7 @@ export default function MarketDashboard() {
       </motion.div>
 
       {/* Bottom Summary Stats */}
-      {!loading && Object.keys(categories).length > 0 && (
+      {!loading && markets && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -450,11 +448,11 @@ export default function MarketDashboard() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4"
         >
           {(() => {
-            const allItems = Object.values(categories).flat() as MarketItem[]
-            const gainers = allItems.filter((i) => i.chgDay > 0).length
-            const losers = allItems.filter((i) => i.chgDay < 0).length
+            const allItems = CATEGORIES.flatMap((cat) => markets[cat.key] || [])
+            const gainers = allItems.filter((i) => i.change1D > 0).length
+            const losers = allItems.filter((i) => i.change1D < 0).length
             const avgChange = allItems.length
-              ? allItems.reduce((s, i) => s + (i.chgDay || 0), 0) / allItems.length
+              ? allItems.reduce((s, i) => s + (i.change1D || 0), 0) / allItems.length
               : 0
             return (
               <>
