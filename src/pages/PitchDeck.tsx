@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   ChevronDown,
@@ -109,7 +110,7 @@ function TitleSlide() {
             Introducing AllWealth — the all-in-one wealth management platform.
           </p>
           <p className="text-xs text-slate-500 mt-8 uppercase tracking-wider">
-            Confidential &nbsp;|&nbsp; February 2026
+            Confidential &nbsp;|&nbsp; March 2026
           </p>
         </motion.div>
       </div>
@@ -198,9 +199,9 @@ function ModelSlide() {
 const deals = [
   { name: 'Wolfram', return: '+500%', icon: Gem },
   { name: 'Equus', return: '+112%', icon: Rocket },
-  { name: 'Black Horse Gold', return: '+105%', icon: Pickaxe },
-  { name: 'Breakthrough Minerals', return: '+80%', icon: Pickaxe },
-  { name: 'Apex Critical Minerals', return: '+1%', icon: Pickaxe },
+  { name: 'Black Horse', return: '+105%', icon: Pickaxe },
+  { name: 'Breakthrough', return: '+80%', icon: Pickaxe },
+  { name: 'Apex', return: '+1%', icon: Pickaxe },
 ]
 
 function InvestmentsSlide() {
@@ -250,14 +251,149 @@ function InvestmentsSlide() {
           transition={{ delay: 0.5 }}
           className="text-center text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-6 py-3 max-w-3xl mx-auto"
         >
-          <span className="font-semibold text-slate-700">HoldCo is the vehicle for these deals.</span> Returns fund software development. Self-funding model.
+          <span className="font-semibold text-slate-700">These returns fund everything.</span> No external capital. Self-funding model → software → massive TAM.
         </motion.p>
       </div>
     </SlideWrapper>
   )
 }
 
-// ─── Slide 4: AllWealth Product ───────────────────────────────────────────────
+// ─── Slide 4: HoldCo ─────────────────────────────────────────────────────────
+
+const comparables = [
+  {
+    name: 'Bloomberg',
+    desc: 'Financial data, analytics & terminals',
+    valuation: '~$100B',
+    metric: 'Private Valuation',
+    icon: BarChart3,
+    color: 'text-amber-400 bg-amber-500/15 border-amber-500/20',
+  },
+  {
+    name: 'Xero',
+    desc: 'Cloud accounting & business platform',
+    valuation: '$22B AUD',
+    metric: 'Market Cap',
+    icon: Calculator,
+    color: 'text-blue-400 bg-blue-500/15 border-blue-500/20',
+  },
+  {
+    name: 'Life360',
+    desc: 'Family safety & location platform',
+    valuation: '$3.5B AUD',
+    metric: 'Market Cap',
+    icon: Users,
+    color: 'text-purple-400 bg-purple-500/15 border-purple-500/20',
+  },
+  {
+    name: 'Family Office Software',
+    desc: 'Addepar, Masttro, Eton Solutions',
+    valuation: '$4B+',
+    metric: 'Market TAM',
+    icon: Building2,
+    color: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/20',
+  },
+]
+
+function HoldCoSlide() {
+  return (
+    <SlideWrapper dark>
+      <div className="relative z-10 max-w-5xl w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
+          <SlideBadge dark>The HoldCo</SlideBadge>
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4">Returns Build Software</h2>
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            Investment returns self-fund AllWealth development — software targeting
+            markets worth tens of billions.
+          </p>
+        </motion.div>
+
+        {/* Flow diagram */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.15, duration: 0.5 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-14"
+        >
+          {[
+            { label: 'Deal Returns', sub: 'Wolfram +500%, Equus +112%', accent: 'text-teal-400 border-teal-500/30 bg-teal-500/5' },
+            { label: 'Fund Development', sub: 'Zero external capital needed', accent: 'text-blue-400 border-blue-500/30 bg-blue-500/5' },
+            { label: 'Capture Massive TAM', sub: 'Wealth management software', accent: 'text-indigo-400 border-indigo-500/30 bg-indigo-500/5' },
+          ].map((step, i) => (
+            <div key={step.label} className="flex items-center gap-3 sm:gap-4">
+              <div className={cn('border rounded-xl px-5 py-4 text-center min-w-[180px]', step.accent)}>
+                <p className="text-sm font-bold text-white">{step.label}</p>
+                <p className="text-xs text-slate-400 mt-1">{step.sub}</p>
+              </div>
+              {i < 2 && <ArrowRight className="w-5 h-5 text-slate-600 hidden sm:block" />}
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Comparable companies */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="mb-6"
+        >
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-500 text-center mb-6">
+            Markets We're Targeting
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {comparables.map((comp, i) => {
+            const Icon = comp.icon
+            return (
+              <motion.div
+                key={comp.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className={cn('border rounded-2xl p-5 text-center', comp.color)}
+              >
+                <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center mx-auto mb-3', comp.color)}>
+                  <Icon className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-bold text-white mb-1">{comp.name}</p>
+                <p className="text-xs text-slate-400 mb-3">{comp.desc}</p>
+                <p className="text-2xl font-bold text-white">{comp.valuation}</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">{comp.metric}</p>
+              </motion.div>
+            )
+          })}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="text-center bg-gradient-to-r from-teal-500/10 to-indigo-500/10 border border-white/10 rounded-2xl px-8 py-5"
+        >
+          <p className="text-base font-bold text-white">
+            Invest in the deals <span className="text-teal-400">(returns)</span> — own equity in AllWealth <span className="text-teal-400">(valuation upside)</span>
+          </p>
+          <p className="text-sm text-slate-400 mt-2">
+            AI-powered development collapses costs by 90%+. One developer builds what used to take teams of 50.
+          </p>
+        </motion.div>
+      </div>
+    </SlideWrapper>
+  )
+}
+
+// ─── Slide 5: AllWealth Product ───────────────────────────────────────────────
 
 const advisorFeatures = [
   { title: 'Advisor Dashboard', desc: 'KPIs, client overview, tasks, revenue analytics at a glance', icon: BarChart3 },
@@ -294,13 +430,34 @@ function ProductSlide() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14"
+          className="text-center mb-6"
         >
           <SlideBadge dark>The Product</SlideBadge>
           <h2 className="text-4xl sm:text-5xl font-bold mb-4">AllWealth</h2>
-          <p className="text-lg text-slate-400">
-            The all-in-one wealth management platform. One product. Two user types. Massive TAM.
+          <p className="text-lg text-slate-400 max-w-3xl mx-auto">
+            The operating system for wealth management. Everything an advisor and their clients need — in one platform. Built, live, and ready to scale.
           </p>
+        </motion.div>
+
+        {/* Key stats bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.15, duration: 0.4 }}
+          className="flex flex-wrap items-center justify-center gap-6 mb-10"
+        >
+          {[
+            { stat: '20', label: 'Tools Live' },
+            { stat: '2', label: 'User Types' },
+            { stat: '90%', label: 'Cheaper Than Competitors' },
+            { stat: '0', label: 'External Capital Used' },
+          ].map((item) => (
+            <div key={item.label} className="text-center px-4">
+              <p className="text-2xl font-bold text-teal-400">{item.stat}</p>
+              <p className="text-[10px] uppercase tracking-wider text-slate-500">{item.label}</p>
+            </div>
+          ))}
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -385,17 +542,22 @@ function ProductSlide() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto"
+          className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto"
         >
           <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Competitor</p>
-            <p className="text-sm font-bold text-white">Addepar: $80,000 USD p.a.</p>
-            <p className="text-xs text-slate-400 mt-1">+ $40,000 USD setup. Enterprise only.</p>
+            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Addepar</p>
+            <p className="text-sm font-bold text-white">$80,000 USD p.a.</p>
+            <p className="text-xs text-slate-400 mt-1">+ $40K setup. Enterprise only.</p>
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">IRESS / Xplan</p>
+            <p className="text-sm font-bold text-white">$15,000 AUD p.a.</p>
+            <p className="text-xs text-slate-400 mt-1">Legacy UI. No client portal.</p>
           </div>
           <div className="bg-teal-500/10 border border-teal-500/20 rounded-xl p-5 text-center">
             <p className="text-xs text-teal-400 uppercase tracking-wider mb-2">AllWealth</p>
-            <p className="text-sm font-bold text-white">From $10/mo per advisor</p>
-            <p className="text-xs text-slate-400 mt-1">HNW tier: $20K AUD setup + $20K AUD p.a.</p>
+            <p className="text-sm font-bold text-white">From $10/mo</p>
+            <p className="text-xs text-slate-400 mt-1">Full platform. Advisor + client.</p>
           </div>
         </motion.div>
       </div>
@@ -813,9 +975,16 @@ function WhySlide() {
             </div>
             <span className="text-white font-semibold text-xl tracking-tight">AllWealth</span>
           </div>
-          <p className="text-sm text-slate-400">
-            hayden@laserbeamcapital.com &nbsp;|&nbsp; allwealth.com.au
+          <p className="text-sm text-slate-400 mb-4">
+            Hayden Beamish
           </p>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold hover:from-teal-400 hover:to-teal-500 transition-all shadow-lg shadow-teal-500/25"
+          >
+            Go to Platform
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </motion.div>
       </div>
     </SlideWrapper>
@@ -824,7 +993,7 @@ function WhySlide() {
 
 // ─── Navigation Dots ──────────────────────────────────────────────────────────
 
-const slideNames = ['Intro', 'Model', 'Track Record', 'Product', 'Built', 'Pipeline', 'Opportunity', 'Financials', 'Why']
+const slideNames = ['Intro', 'Model', 'Track Record', 'HoldCo', 'Product', 'Built', 'Pipeline', 'Opportunity', 'Financials', 'Why']
 
 function NavDots({ active, onNav }: { active: number; onNav: (i: number) => void }) {
   return (
@@ -892,12 +1061,13 @@ export default function PitchDeck() {
       <div ref={setRef(0)}><TitleSlide /></div>
       <div ref={setRef(1)}><ModelSlide /></div>
       <div ref={setRef(2)}><InvestmentsSlide /></div>
-      <div ref={setRef(3)}><ProductSlide /></div>
-      <div ref={setRef(4)}><ToolsBuiltSlide /></div>
-      <div ref={setRef(5)}><GrowthPipelineSlide /></div>
-      <div ref={setRef(6)}><OpportunitySlide /></div>
-      <div ref={setRef(7)}><FinancialSlide /></div>
-      <div ref={setRef(8)}><WhySlide /></div>
+      <div ref={setRef(3)}><HoldCoSlide /></div>
+      <div ref={setRef(4)}><ProductSlide /></div>
+      <div ref={setRef(5)}><ToolsBuiltSlide /></div>
+      <div ref={setRef(6)}><GrowthPipelineSlide /></div>
+      <div ref={setRef(7)}><OpportunitySlide /></div>
+      <div ref={setRef(8)}><FinancialSlide /></div>
+      <div ref={setRef(9)}><WhySlide /></div>
     </div>
   )
 }
