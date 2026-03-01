@@ -10,7 +10,7 @@ export default function RoleSwitcher() {
   const handleSwitch = (newRole: 'advisor' | 'client') => {
     if (newRole === role) return
     setRole(newRole)
-    navigate(newRole === 'advisor' ? '/advisor/markets' : '/client/wealth')
+    navigate(newRole === 'advisor' ? '/advisor/dashboard' : '/client/dashboard')
   }
 
   return (

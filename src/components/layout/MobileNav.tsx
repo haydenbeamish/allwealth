@@ -14,27 +14,42 @@ import {
   TrendingUp,
   Calculator,
   Landmark,
+  LayoutDashboard,
+  Layers,
+  ShieldCheck,
+  PieChart,
+  Target,
+  FolderOpen,
+  MessageSquare,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useRole } from '@/hooks/useRole'
 import RoleSwitcher from './RoleSwitcher'
 
 const advisorNav = [
+  { to: '/advisor/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/advisor/markets', icon: BarChart3, label: 'Markets' },
   { to: '/advisor/analysis', icon: Search, label: 'Company Analysis' },
   { to: '/advisor/portfolios', icon: Briefcase, label: 'Client Portfolios' },
+  { to: '/advisor/models', icon: Layers, label: 'Model Portfolios' },
   { to: '/advisor/wraps', icon: Newspaper, label: 'Market Wraps' },
   { to: '/advisor/plans', icon: FileText, label: 'Financial Plans' },
+  { to: '/advisor/compliance', icon: ShieldCheck, label: 'Compliance' },
   { to: '/advisor/analyst', icon: Bot, label: 'AI Analyst' },
 ]
 
 const clientNav = [
+  { to: '/client/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/client/wealth', icon: Wallet, label: 'Net Wealth' },
   { to: '/client/banking', icon: Building2, label: 'Bank Feeds' },
   { to: '/client/cashflow', icon: ArrowUpDown, label: 'Cash Flow' },
   { to: '/client/performance', icon: TrendingUp, label: 'Performance' },
+  { to: '/client/attribution', icon: PieChart, label: 'Attribution' },
   { to: '/client/tax', icon: Calculator, label: 'Tax Estimates' },
   { to: '/client/holdings', icon: Landmark, label: 'Private Holdings' },
+  { to: '/client/goals', icon: Target, label: 'Goals' },
+  { to: '/client/documents', icon: FolderOpen, label: 'Documents' },
+  { to: '/client/messages', icon: MessageSquare, label: 'Messages' },
 ]
 
 export default function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -63,7 +78,7 @@ export default function MobileNav({ open, onClose }: { open: boolean; onClose: (
             {/* Header */}
             <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
                   <span className="text-white font-bold text-sm">AW</span>
                 </div>
                 <span className="text-white font-semibold text-lg tracking-tight">AllWealth</span>
@@ -96,7 +111,7 @@ export default function MobileNav({ open, onClose }: { open: boolean; onClose: (
                     cn(
                       'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
                       isActive
-                        ? 'bg-teal-500/15 text-teal-400 border-l-2 border-teal-400'
+                        ? 'bg-teal-500/15 text-teal-400 border-l-2 border-teal-400 shadow-sm shadow-teal-500/5'
                         : 'text-slate-400 hover:text-white hover:bg-white/5 border-l-2 border-transparent'
                     )
                   }
