@@ -114,7 +114,7 @@ function SortHeader({
 }
 
 function MarketTable({ items }: { items: MarketItem[] }) {
-  const { sorted, sortKey, sortDir, handleSort } = useSortable(items, 'name', 'asc')
+  const { sorted, sortKey, sortDir, handleSort } = useSortable(items, 'change1D', 'desc')
   const prevPricesRef = useRef<Record<string, number>>({})
   const [flashMap, setFlashMap] = useState<Record<string, 'up' | 'down'>>({})
 
