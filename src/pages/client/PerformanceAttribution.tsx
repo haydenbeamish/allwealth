@@ -285,7 +285,7 @@ export default function PerformanceAttribution() {
         transition={{ duration: 0.4, delay: 0.3 }}
         className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
       >
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-semibold text-slate-700 mb-4">
           Monthly Attribution Breakdown
         </h2>
         <ResponsiveContainer width="100%" height={380}>
@@ -352,7 +352,7 @@ export default function PerformanceAttribution() {
         className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="p-4 border-b border-slate-100">
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+          <h2 className="text-sm font-semibold text-slate-700">
             Sector Attribution Detail
           </h2>
         </div>
@@ -517,7 +517,7 @@ export default function PerformanceAttribution() {
         transition={{ duration: 0.4, delay: 0.4 }}
         className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
       >
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-semibold text-slate-700 mb-4">
           Top & Bottom Stock Contributors
         </h2>
         <ResponsiveContainer width="100%" height={340}>
@@ -568,7 +568,7 @@ export default function PerformanceAttribution() {
         transition={{ duration: 0.4, delay: 0.45 }}
         className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
       >
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-semibold text-slate-700 mb-4">
           Factor Exposure: Portfolio vs Benchmark
         </h2>
         <ResponsiveContainer width="100%" height={340}>
@@ -628,7 +628,7 @@ export default function PerformanceAttribution() {
           <div className="p-2 rounded-lg text-amber-600 bg-amber-50">
             <ShieldAlert className="w-4 h-4" />
           </div>
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+          <h2 className="text-sm font-semibold text-slate-700">
             Risk Metrics
           </h2>
         </div>

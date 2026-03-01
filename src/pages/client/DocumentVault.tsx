@@ -81,7 +81,7 @@ export default function DocumentVault() {
         </div>
         <button
           onClick={handleRequestDocument}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-teal-600 to-teal-500 text-white text-sm font-medium rounded-xl hover:shadow-md transition-all duration-300 btn-glow"
         >
           <Plus className="w-4 h-4" />
           Request Document

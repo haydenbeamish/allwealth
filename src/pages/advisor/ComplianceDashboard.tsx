@@ -106,7 +106,10 @@ export default function ComplianceDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-2xl font-bold text-slate-900">Compliance Dashboard</h1>
+        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <ShieldCheck className="w-7 h-7 text-teal-600" />
+          Compliance Dashboard
+        </h1>
         <p className="text-sm text-slate-500 mt-1">AFSL compliance tracking and audit management</p>
       </motion.div>
 
@@ -154,7 +157,7 @@ export default function ComplianceDashboard() {
         className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Review Schedule</h2>
+          <h2 className="text-sm font-semibold text-slate-700">Review Schedule</h2>
           <span className="text-xs text-slate-400">{reviewSchedule.length} clients</span>
         </div>
         <div className="overflow-x-auto">
@@ -224,7 +227,7 @@ export default function ComplianceDashboard() {
         className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Compliance Tasks</h2>
+          <h2 className="text-sm font-semibold text-slate-700">Compliance Tasks</h2>
           <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
             {(['all', 'pending', 'completed', 'overdue'] as const).map((f) => (
               <button
@@ -306,7 +309,7 @@ export default function ComplianceDashboard() {
         className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Audit Trail</h2>
+          <h2 className="text-sm font-semibold text-slate-700">Audit Trail</h2>
           <span className="text-xs text-slate-400">{auditTrail.length} entries</span>
         </div>
         <div className="overflow-x-auto">

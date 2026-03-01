@@ -56,6 +56,7 @@ function SlideWrapper({
         className
       )}
     >
+      {dark && <div className="absolute inset-0 dot-grid" />}
       {children}
     </section>
   )
@@ -80,8 +81,8 @@ function TitleSlide() {
   return (
     <SlideWrapper dark>
       <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/5 rounded-full -translate-y-1/3 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-500/5 rounded-full translate-y-1/3 -translate-x-1/4" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/5 rounded-full -translate-y-1/3 translate-x-1/4 animate-float-slow" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-500/5 rounded-full translate-y-1/3 -translate-x-1/4 animate-float-delayed" />
       </div>
       <div className="relative z-10 text-center max-w-4xl">
         <motion.div
@@ -636,7 +637,7 @@ function FinancialSlide() {
                 ))}
               </tbody>
               <tfoot>
-                <tr className="bg-slate-900 text-white">
+                <tr className="bg-gradient-to-r from-slate-900 to-slate-800 text-white">
                   <td className="px-6 py-4 text-sm font-bold">Total ARR</td>
                   <td className="text-right px-4 py-4 text-sm font-bold tabular-nums">${total.y1}K</td>
                   <td className="text-right px-4 py-4 text-sm font-bold tabular-nums">${total.y2}K</td>
@@ -694,7 +695,7 @@ function WhySlide() {
   return (
     <SlideWrapper dark className="relative">
       <div className="absolute inset-0">
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-500/5 rounded-full translate-y-1/3 translate-x-1/4" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-500/5 rounded-full translate-y-1/3 translate-x-1/4 animate-float-delayed" />
       </div>
       <div className="relative z-10 max-w-5xl w-full">
         <motion.div
@@ -759,7 +760,7 @@ const slideNames = ['Intro', 'Model', 'Track Record', 'Product', 'Built', 'Oppor
 
 function NavDots({ active, onNav }: { active: number; onNav: (i: number) => void }) {
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-center gap-3">
+    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-center gap-3 bg-black/20 glass rounded-full px-2 py-4">
       {slideNames.map((name, i) => (
         <button
           key={name}
@@ -775,7 +776,7 @@ function NavDots({ active, onNav }: { active: number; onNav: (i: number) => void
           </span>
           <span className={cn(
             'w-2 h-2 rounded-full transition-all',
-            active === i ? 'bg-teal-500 scale-125' : 'bg-slate-400/40 hover:bg-slate-400/60'
+            active === i ? 'bg-teal-400 scale-150 shadow-lg shadow-teal-400/40' : 'bg-slate-400/40 hover:bg-slate-400/60'
           )} />
         </button>
       ))}

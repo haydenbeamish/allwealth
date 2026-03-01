@@ -70,17 +70,20 @@ export default function AdvisorLogin() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="hidden lg:flex lg:w-[58%] relative overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]"
       >
-        {/* Decorative elements */}
+        {/* Dot grid overlay */}
+        <div className="absolute inset-0 dot-grid" />
+
+        {/* Decorative floating elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-500/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-500/5 rounded-full translate-y-1/3 -translate-x-1/4" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-teal-500/3 to-transparent rounded-full" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-500/5 rounded-full -translate-y-1/2 translate-x-1/4 animate-float-slow" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-500/5 rounded-full translate-y-1/3 -translate-x-1/4 animate-float-delayed" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-teal-500/5 to-transparent rounded-full animate-float" />
         </div>
 
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
               <span className="text-white font-bold text-base">AW</span>
             </div>
             <span className="text-white font-semibold text-xl tracking-tight">AllWealth</span>
@@ -93,7 +96,7 @@ export default function AdvisorLogin() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-5">
                 <Briefcase className="w-5 h-5 text-teal-400" />
                 <span className="text-teal-400 text-sm font-semibold uppercase tracking-wider">Advisor Portal</span>
               </div>
@@ -117,7 +120,7 @@ export default function AdvisorLogin() {
                     transition={{ delay: 0.5 + i * 0.1, duration: 0.4 }}
                     className="flex items-start gap-4"
                   >
-                    <div className="p-2.5 rounded-lg bg-teal-500/10 text-teal-400 flex-shrink-0">
+                    <div className="p-2.5 rounded-lg bg-teal-500/10 text-teal-400 flex-shrink-0 border border-teal-500/10">
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
@@ -225,8 +228,8 @@ export default function AdvisorLogin() {
               type="submit"
               disabled={loading}
               className={cn(
-                'w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold transition-all',
-                'bg-teal-600 text-white hover:bg-teal-700 shadow-sm hover:shadow-md',
+                'w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300',
+                'bg-gradient-to-r from-teal-600 to-teal-500 text-white btn-glow',
                 'active:scale-[0.98]',
                 loading && 'opacity-80 cursor-not-allowed'
               )}

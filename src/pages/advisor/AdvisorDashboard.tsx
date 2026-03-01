@@ -131,11 +131,21 @@ export default function AdvisorDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
+        className="relative overflow-hidden bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 rounded-2xl p-6 text-white"
       >
-        <h1 className="text-2xl font-bold text-slate-900">
-          {getGreeting()}, {advisorProfile.name.split(' ')[0]}
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">{today}</p>
+        <div className="absolute inset-0 dot-grid opacity-50" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full -translate-y-1/2 translate-x-1/3" />
+        <div className="relative z-10 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-lg font-bold shadow-lg shadow-teal-500/20 flex-shrink-0">
+            {advisorProfile.name.split(' ').map(n => n[0]).join('')}
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">
+              {getGreeting()}, {advisorProfile.name.split(' ')[0]}
+            </h1>
+            <p className="text-sm text-slate-400 mt-0.5">{today}</p>
+          </div>
+        </div>
       </motion.div>
 
       {/* KPI Cards */}
@@ -188,8 +198,8 @@ export default function AdvisorDashboard() {
         className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Client Overview</h2>
-          <span className="text-xs text-slate-400">{clientOverview.length} clients</span>
+          <h2 className="text-sm font-semibold text-slate-700">Client Overview</h2>
+          <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{clientOverview.length} clients</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -265,7 +275,7 @@ export default function AdvisorDashboard() {
           className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
         >
           <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Tasks</h2>
+            <h2 className="text-sm font-semibold text-slate-700">Tasks</h2>
             <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
               {(['pending', 'completed', 'all'] as const).map((f) => (
                 <button
@@ -327,7 +337,7 @@ export default function AdvisorDashboard() {
           transition={{ duration: 0.4, delay: 0.35 }}
           className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
         >
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">Revenue Trend</h2>
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Revenue Trend</h2>
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={revenueData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
@@ -362,7 +372,7 @@ export default function AdvisorDashboard() {
           className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
         >
           <div className="p-4 border-b border-slate-100">
-            <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Recent Activity</h2>
+            <h2 className="text-sm font-semibold text-slate-700">Recent Activity</h2>
           </div>
           <div className="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
             {recentActivity.map((item, i) => {
@@ -398,7 +408,7 @@ export default function AdvisorDashboard() {
           transition={{ duration: 0.4, delay: 0.45 }}
           className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
         >
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">FUM Distribution</h2>
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">FUM Distribution</h2>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie

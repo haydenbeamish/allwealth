@@ -150,7 +150,7 @@ export default function SecureMessaging() {
 
         {/* Advisor info */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-600">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 shadow-md shadow-teal-500/20">
             <span className="text-sm font-semibold text-white">HB</span>
           </div>
           <div>
@@ -215,7 +215,7 @@ export default function SecureMessaging() {
                           'max-w-[80%] px-4 py-3',
                           msg.sender === 'advisor'
                             ? 'rounded-2xl rounded-bl-md bg-slate-50 text-slate-700'
-                            : 'rounded-2xl rounded-br-md bg-teal-600 text-white'
+                            : 'rounded-2xl rounded-br-md bg-gradient-to-br from-teal-600 to-teal-500 text-white'
                         )}
                       >
                         <p className="text-sm leading-relaxed">{msg.content}</p>
@@ -281,7 +281,7 @@ export default function SecureMessaging() {
               className={cn(
                 'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all',
                 inputValue.trim() && !isTyping
-                  ? 'bg-teal-600 text-white shadow-sm hover:bg-teal-700'
+                  ? 'bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-sm btn-glow'
                   : 'cursor-not-allowed bg-slate-100 text-slate-400'
               )}
             >

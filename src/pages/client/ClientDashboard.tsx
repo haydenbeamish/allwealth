@@ -98,17 +98,26 @@ export default function ClientDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        className="relative overflow-hidden bg-gradient-to-r from-teal-700 via-teal-800 to-emerald-800 rounded-2xl p-6 text-white"
       >
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Welcome back, {clientProfile.names.split(' ')[0]}</h1>
-          <p className="text-sm text-slate-500 mt-1">Here&apos;s your financial snapshot</p>
-        </div>
-        <div className="flex items-center gap-2 bg-teal-50 border border-teal-200 rounded-lg px-3 py-2">
-          <Calendar className="w-4 h-4 text-teal-600" />
-          <span className="text-sm text-teal-700 font-medium">
-            Next review in {daysUntilMeeting} days
-          </span>
+        <div className="absolute inset-0 dot-grid opacity-40" />
+        <div className="absolute bottom-0 right-0 w-48 h-48 bg-emerald-400/10 rounded-full translate-y-1/3 translate-x-1/4" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center text-lg font-bold flex-shrink-0">
+              {clientProfile.names.split(' & ')[0].split(' ').map(n => n[0]).join('')}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Welcome back, {clientProfile.names.split(' ')[0]}</h1>
+              <p className="text-sm text-teal-200/70 mt-0.5">Here&apos;s your financial snapshot</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg px-3 py-2">
+            <Calendar className="w-4 h-4 text-teal-300" />
+            <span className="text-sm text-teal-100 font-medium">
+              Next review in {daysUntilMeeting} days
+            </span>
+          </div>
         </div>
       </motion.div>
 
@@ -163,7 +172,7 @@ export default function ClientDashboard() {
           transition={{ duration: 0.4, delay: 0.25 }}
           className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
         >
-          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">Wealth Trend</h2>
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Wealth Trend</h2>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={miniChartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
               <defs>
@@ -207,9 +216,9 @@ export default function ClientDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.3 + i * 0.04 }}
                 onClick={() => navigate(link.path)}
-                className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-left hover:border-teal-300 hover:shadow-md transition-all group"
+                className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-left hover:border-teal-300 hover:shadow-md transition-all duration-200 group card-hover"
               >
-                <div className="p-2 rounded-lg bg-teal-50 text-teal-600 w-fit mb-3 group-hover:bg-teal-100 transition-colors">
+                <div className="p-2 rounded-lg bg-teal-50 text-teal-600 w-fit mb-3 group-hover:bg-teal-100 group-hover:scale-110 transition-all duration-200">
                   <Icon className="w-4 h-4" />
                 </div>
                 <p className="text-sm font-medium text-slate-800 mb-0.5">{link.title}</p>
@@ -230,7 +239,7 @@ export default function ClientDashboard() {
           className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
         >
           <div className="p-4 border-b border-slate-100">
-            <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Upcoming Events</h2>
+            <h2 className="text-sm font-semibold text-slate-700">Upcoming Events</h2>
           </div>
           <div className="divide-y divide-slate-100">
             {upcomingEvents.map((evt, i) => (
@@ -267,7 +276,7 @@ export default function ClientDashboard() {
           className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
         >
           <div className="p-4 border-b border-slate-100">
-            <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Recent Transactions</h2>
+            <h2 className="text-sm font-semibold text-slate-700">Recent Transactions</h2>
           </div>
           <div className="divide-y divide-slate-100">
             {recentTransactions.map((txn, i) => {
@@ -312,7 +321,7 @@ export default function ClientDashboard() {
             className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
           >
             <div className="p-4 border-b border-slate-100">
-              <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Markets</h2>
+              <h2 className="text-sm font-semibold text-slate-700">Markets</h2>
             </div>
             <div className="divide-y divide-slate-100">
               {marketHighlights.map((item, i) => (

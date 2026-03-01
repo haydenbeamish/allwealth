@@ -108,7 +108,7 @@ export default function ModelPortfolios() {
         </div>
         <button
           onClick={handleCreateModel}
-          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white text-sm font-medium rounded-xl transition-all duration-300 btn-glow"
         >
           <Plus className="w-4 h-4" />
           Create Model
@@ -541,7 +541,7 @@ export default function ModelPortfolios() {
                       <div className="p-4 border-t border-slate-100 flex justify-end">
                         <button
                           onClick={handleRebalance}
-                          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
+                          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white text-sm font-medium rounded-xl transition-all duration-300 btn-glow"
                         >
                           <RefreshCw className="w-4 h-4" />
                           Run Rebalance

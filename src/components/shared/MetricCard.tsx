@@ -31,12 +31,15 @@ export default function MetricCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay, ease: 'easeOut' }}
-      className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 card-hover"
+      className="relative overflow-hidden bg-white rounded-xl border border-slate-200 shadow-sm p-5 card-hover group"
     >
+      {/* Top accent line — visible on hover */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
       <div className="flex items-start justify-between mb-3">
         <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</span>
         {Icon && (
-          <div className={cn('p-2 rounded-lg', iconColor)}>
+          <div className={cn('p-2 rounded-lg transition-transform duration-300 group-hover:scale-110', iconColor)}>
             <Icon className="w-4 h-4" />
           </div>
         )}

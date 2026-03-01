@@ -93,6 +93,7 @@ function CircularProgress({
         strokeDasharray={circumference}
         strokeDashoffset={offset}
         transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        style={{ transition: 'stroke-dashoffset 1s ease-out' }}
       />
       <text
         x="50%"
@@ -300,7 +301,7 @@ export default function GoalsTracking() {
         transition={{ duration: 0.4, delay: 0.45, ease: 'easeOut' }}
         className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
       >
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-semibold text-slate-700 mb-4">
           Retirement Projection
         </h2>
         <ResponsiveContainer width="100%" height={340}>
@@ -371,7 +372,7 @@ export default function GoalsTracking() {
         transition={{ duration: 0.4, delay: 0.55, ease: 'easeOut' }}
         className="bg-white rounded-xl border border-slate-200 shadow-sm p-6"
       >
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-6">
+        <h2 className="text-sm font-semibold text-slate-700 mb-6">
           Goal Details
         </h2>
         <div className="space-y-6">

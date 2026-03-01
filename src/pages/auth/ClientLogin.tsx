@@ -70,11 +70,14 @@ export default function ClientLogin() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="hidden lg:flex lg:w-[58%] relative overflow-hidden bg-gradient-to-br from-teal-700 via-teal-800 to-emerald-900"
       >
-        {/* Decorative elements */}
+        {/* Dot grid overlay */}
+        <div className="absolute inset-0 dot-grid" />
+
+        {/* Decorative floating elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full translate-y-1/3 -translate-x-1/4" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-transparent rounded-full" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4 animate-float-slow" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full translate-y-1/3 -translate-x-1/4 animate-float-delayed" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-transparent rounded-full animate-float" />
         </div>
 
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
@@ -225,8 +228,8 @@ export default function ClientLogin() {
               type="submit"
               disabled={loading}
               className={cn(
-                'w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold transition-all',
-                'bg-teal-600 text-white hover:bg-teal-700 shadow-sm hover:shadow-md',
+                'w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300',
+                'bg-gradient-to-r from-teal-600 to-emerald-500 text-white btn-glow',
                 'active:scale-[0.98]',
                 loading && 'opacity-80 cursor-not-allowed'
               )}

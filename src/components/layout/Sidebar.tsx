@@ -70,7 +70,7 @@ export default function Sidebar() {
         'flex items-center h-16 px-4 border-b border-white/10',
         collapsed ? 'justify-center' : 'gap-3'
       )}>
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-teal-500/20">
           <span className="text-white font-bold text-sm">AW</span>
         </div>
         {!collapsed && (
@@ -95,7 +95,7 @@ export default function Sidebar() {
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
                 collapsed && 'justify-center px-0',
                 isActive
-                  ? 'bg-teal-500/15 text-teal-400 border-l-2 border-teal-400'
+                  ? 'bg-teal-500/15 text-teal-400 border-l-2 border-teal-400 shadow-sm shadow-teal-500/5'
                   : 'text-slate-400 hover:text-white hover:bg-white/5 border-l-2 border-transparent'
               )
             }
