@@ -11,13 +11,14 @@ export default function AnimatedNumber({
   format = (n) => n.toLocaleString(),
   duration = 800,
 }: AnimatedNumberProps) {
-  const [displayed, setDisplayed] = useState(0)
-  const startValue = useRef(0)
+  const [displayed, setDisplayed] = useState(value)
+  const displayedRef = useRef(value)
+  const startValue = useRef(value)
   const startTime = useRef<number | null>(null)
   const rafId = useRef<number>(0)
 
   useEffect(() => {
-    startValue.current = displayed
+    startValue.current = displayedRef.current
     startTime.current = null
 
     const animate = (timestamp: number) => {
@@ -28,6 +29,7 @@ export default function AnimatedNumber({
       // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3)
       const current = startValue.current + (value - startValue.current) * eased
+      displayedRef.current = current
       setDisplayed(current)
 
       if (progress < 1) {

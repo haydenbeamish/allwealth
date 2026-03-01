@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
   TrendingUp,
-  TrendingDown,
   BarChart3,
   Target,
   Award,
@@ -61,13 +60,18 @@ const periodSlices: Record<Period, number> = {
   'ALL': 12,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function PerfTooltip({ active, payload, label }: any) {
+interface TooltipPayloadItem {
+  name: string
+  value: number
+  color: string
+}
+
+function PerfTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadItem[]; label?: string }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3">
         <p className="text-xs text-slate-500 mb-2 font-medium">{label}</p>
-        {payload.map((entry: { name: string; value: number; color: string }) => (
+        {payload.map((entry) => (
           <div key={entry.name} className="flex items-center gap-2 text-xs mb-0.5">
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
             <span className="text-slate-600">{entry.name}:</span>
@@ -89,8 +93,6 @@ export default function PerformanceReports() {
     return cumulativeData.slice(-count)
   }, [selectedPeriod])
 
-  // Current period summary
-  const latestReturn = mockPeriodReturns.find((r) => r.period === 'MTD')
   const yearReturn = mockPeriodReturns.find((r) => r.period === '1Y')
 
   const handleGenerateReport = () => {

@@ -30,6 +30,28 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Focus visible styles for accessibility */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Skip link for keyboard navigation */
+  .skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    padding: 8px 16px;
+    background: var(--color-primary);
+    color: white;
+    z-index: 100;
+    transition: top 0.2s;
+  }
+  .skip-to-content:focus {
+    top: 0;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -46,6 +68,15 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: #94A3B8;
+  }
+
+  /* Scrollbar-hide utility for horizontal scrollers */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
@@ -120,4 +151,16 @@
   transform: scale(0.97);
 }
 
-/* Inter font loaded via index.html <link> tag for faster rendering */
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-scroll,
+  .flash-positive,
+  .flash-negative,
+  .pulse-live,
+  .skeleton {
+    animation: none;
+  }
+  .card-hover:hover {
+    transform: none;
+  }
+}

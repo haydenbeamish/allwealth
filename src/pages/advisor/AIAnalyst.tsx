@@ -48,26 +48,38 @@ function TypingIndicator() {
   )
 }
 
+function renderBoldText(text: string) {
+  const parts = text.split(/\*\*(.*?)\*\*/g)
+  return parts.map((part, j) =>
+    j % 2 === 1 ? (
+      <strong key={j} className="font-semibold text-slate-900">{part}</strong>
+    ) : (
+      <span key={j}>{part}</span>
+    )
+  )
+}
+
 function formatMarkdown(text: string) {
-  // Simple markdown-like formatting
   const parts = text.split('\n')
   return parts.map((line, i) => {
-    // Bold
-    const processed = line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>')
     // List items
     if (line.startsWith('- ')) {
       return (
-        <li key={i} className="ml-4 list-disc text-sm text-slate-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: processed.slice(2) }} />
+        <li key={i} className="ml-4 list-disc text-sm text-slate-600 leading-relaxed">
+          {renderBoldText(line.slice(2))}
+        </li>
       )
     }
     // Numbered list
     const numberedMatch = line.match(/^(\d+)\.\s(.*)/)
     if (numberedMatch) {
       return (
-        <li key={i} className="ml-4 list-decimal text-sm text-slate-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: numberedMatch[2] }} />
+        <li key={i} className="ml-4 list-decimal text-sm text-slate-600 leading-relaxed">
+          {renderBoldText(numberedMatch[2])}
+        </li>
       )
     }
-    // Table row (simplified - just show as text)
+    // Table row
     if (line.startsWith('|')) {
       return (
         <div key={i} className="text-xs font-mono text-slate-500 leading-relaxed">{line}</div>
@@ -77,7 +89,9 @@ function formatMarkdown(text: string) {
     if (!line.trim()) return <div key={i} className="h-2" />
     // Normal text
     return (
-      <p key={i} className="text-sm text-slate-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: processed }} />
+      <p key={i} className="text-sm text-slate-600 leading-relaxed">
+        {renderBoldText(line)}
+      </p>
     )
   })
 }

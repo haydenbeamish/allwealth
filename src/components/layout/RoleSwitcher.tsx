@@ -1,4 +1,4 @@
-import { useRole } from '@/context/RoleContext'
+import { useRole } from '@/hooks/useRole'
 import { cn } from '@/lib/utils'
 import { useNavigate } from 'react-router-dom'
 import { Shield, User } from 'lucide-react'

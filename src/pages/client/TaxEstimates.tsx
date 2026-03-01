@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   Receipt,
@@ -11,6 +11,7 @@ import {
   CalendarDays,
 } from 'lucide-react'
 import { cn, formatCurrency } from '@/lib/utils'
+import { useClickOutside } from '@/hooks/useClickOutside'
 import AnimatedNumber from '@/components/shared/AnimatedNumber'
 import { mockTaxEstimate as taxEstimate } from '@/data/mockTax'
 
@@ -60,6 +61,7 @@ const optimisationTips = [
 export default function TaxEstimates() {
   const [selectedFY, setSelectedFY] = useState(fyOptions[0])
   const [showFYDropdown, setShowFYDropdown] = useState(false)
+  const fyDropdownRef = useClickOutside<HTMLDivElement>(useCallback(() => setShowFYDropdown(false), []), showFYDropdown)
 
   return (
     <div className="space-y-6">
@@ -75,7 +77,7 @@ export default function TaxEstimates() {
           <p className="text-sm text-slate-500 mt-1">Estimated tax position and optimisation opportunities</p>
         </div>
         {/* FY Selector */}
-        <div className="relative">
+        <div className="relative" ref={fyDropdownRef}>
           <button
             onClick={() => setShowFYDropdown(!showFYDropdown)}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg shadow-sm text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
@@ -207,7 +209,7 @@ export default function TaxEstimates() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {taxEstimate.cgtSchedule.map((row: any, i: any) => {
+              {taxEstimate.cgtSchedule.map((row, i) => {
                 const purchaseDate = new Date(row.purchaseDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: '2-digit' })
                 const saleDate = new Date(row.saleDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: '2-digit' })
                 return (
@@ -253,11 +255,11 @@ export default function TaxEstimates() {
               <tr className="border-t-2 border-slate-200 bg-slate-50">
                 <td colSpan={5} className="px-4 py-3 text-sm font-bold text-slate-900">Total</td>
                 <td className="text-right px-4 py-3 text-sm font-bold text-slate-900 tabular-nums">
-                  {formatCurrency(taxEstimate.cgtSchedule.reduce((s: any, r: any) => s + r.gain, 0))}
+                  {formatCurrency(taxEstimate.cgtSchedule.reduce((s, r) => s + r.gain, 0))}
                 </td>
                 <td />
                 <td className="text-right px-4 py-3 text-sm font-bold text-slate-900 tabular-nums">
-                  {formatCurrency(taxEstimate.cgtSchedule.reduce((s: any, r: any) => s + r.taxableGain, 0))}
+                  {formatCurrency(taxEstimate.cgtSchedule.reduce((s, r) => s + r.taxableGain, 0))}
                 </td>
               </tr>
             </tfoot>

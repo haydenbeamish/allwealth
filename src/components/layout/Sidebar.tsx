@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { useRole } from '@/context/RoleContext'
+import { useRole } from '@/hooks/useRole'
 import {
   BarChart3,
   Search,
@@ -94,6 +94,7 @@ export default function Sidebar() {
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         className="flex items-center justify-center h-12 border-t border-white/10 text-slate-400 hover:text-white transition-colors"
       >
         {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
