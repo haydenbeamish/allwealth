@@ -15,10 +15,20 @@ function getHeaders(extra?: Record<string, string>): Record<string, string> {
 }
 
 export async function fetchJSON<T>(endpoint: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    headers: getHeaders(),
-  })
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}${endpoint}`, {
+      headers: getHeaders(),
+    })
+  } catch (err) {
+    // Network errors, CORS blocks, and DNS failures end up here
+    console.error(`[fetchJSON] Network error for ${endpoint}:`, err)
+    throw new Error(
+      `Network error fetching ${endpoint} – this may be a CORS issue. ` +
+      `Ensure the API server allows origin ${window.location.origin}`
+    )
+  }
+  if (!res.ok) throw new Error(`API ${endpoint}: ${res.status} ${res.statusText}`)
   return res.json()
 }
 
@@ -68,33 +78,111 @@ export async function streamSSE(
   }
 }
 
+/**
+ * Extract a Record<string, unknown[]> of market categories from an unknown API
+ * response. The API may return any of these shapes:
+ *   1. { success, data: { categories: { "Global Markets": [...], … } } }
+ *   2. { success, data: { "Global Markets": [...], … } }
+ *   3. { categories: { "Global Markets": [...], … } }
+ *   4. { "Global Markets": [...], … }           (flat object)
+ *   5. [ { ticker, category, … }, … ]           (flat array – /api/markets)
+ *
+ * Returns null when nothing usable is found.
+ */
+function extractCategories(raw: unknown): Record<string, unknown[]> | null {
+  if (!raw || typeof raw !== 'object') return null
+
+  // If the response signals an error, bail out
+  const obj = raw as Record<string, unknown>
+  if (obj.error === true) return null
+
+  // Flat array → group by the `category` field on each item
+  if (Array.isArray(raw)) {
+    if (raw.length === 0) return null
+    const grouped: Record<string, unknown[]> = {}
+    for (const item of raw) {
+      const cat = (item as Record<string, unknown>).category
+      if (typeof cat === 'string') {
+        ;(grouped[cat] ??= []).push(item)
+      }
+    }
+    return Object.keys(grouped).length > 0 ? grouped : null
+  }
+
+  // Unwrap `{ success, data: … }` envelope (one or two levels deep)
+  let payload: Record<string, unknown> = obj
+  if (payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+    payload = payload.data as Record<string, unknown>
+    // Handle double-wrapped data (e.g. proxy or middleware duplication)
+    if (payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+      payload = payload.data as Record<string, unknown>
+    }
+  } else if (payload.data && Array.isArray(payload.data)) {
+    return extractCategories(payload.data)
+  }
+
+  // `{ categories: { … } }` wrapper
+  if (payload.categories && typeof payload.categories === 'object' && !Array.isArray(payload.categories)) {
+    return payload.categories as Record<string, unknown[]>
+  }
+
+  // The payload itself might be the categories map – check for at least one
+  // key whose value is an array.
+  const hasArrayValues = Object.values(payload).some(Array.isArray)
+  if (hasArrayValues) {
+    // Strip non-array keys (like `success`, `lastUpdated`, etc.)
+    const cats: Record<string, unknown[]> = {}
+    for (const [k, v] of Object.entries(payload)) {
+      if (Array.isArray(v)) cats[k] = v
+    }
+    return Object.keys(cats).length > 0 ? cats : null
+  }
+
+  return null
+}
+
 export const marketsApi = {
   getFull: async () => {
-    const raw = await fetchJSON<Record<string, unknown>>('/markets/full')
-    // Unwrap { success: true, data: { categories: {...} } } envelope
-    const payload = (raw.data && typeof raw.data === 'object') ? raw.data as Record<string, unknown> : raw
-    // Handle both { categories: {...} } and flat { "Global Markets": [...], ... } shapes
-    if (payload.categories && typeof payload.categories === 'object') {
-      return { categories: payload.categories as Record<string, unknown[]> }
+    const raw = await fetchJSON<unknown>('/markets/full')
+
+    const categories = extractCategories(raw)
+    if (categories) {
+      return { categories }
     }
-    // If the response IS the categories directly (no wrapper)
-    return { categories: payload as Record<string, unknown[]> }
+
+    // Fallback: try the flat /markets endpoint and group client-side
+    console.warn('[marketsApi] /markets/full returned unusable data, trying /markets fallback', raw)
+    const flat = await fetchJSON<unknown>('/markets')
+    const fallbackCategories = extractCategories(flat)
+    if (fallbackCategories) {
+      return { categories: fallbackCategories }
+    }
+
+    console.error('[marketsApi] Neither /markets/full nor /markets returned usable data', { full: raw, flat })
+    throw new Error('Market data unavailable – unexpected API response format')
   },
   getSummary: async () => {
-    const res = await fetch(`${API_BASE}/markets/summary`, {
-      headers: getHeaders(),
-    })
-    if (!res.ok) throw new Error(`API error: ${res.status}`)
+    let res: Response
+    try {
+      res = await fetch(`${API_BASE}/markets/summary`, {
+        headers: getHeaders(),
+      })
+    } catch {
+      return { summary: '' }
+    }
+    if (!res.ok) return { summary: '' }
     const contentType = res.headers.get('content-type') || ''
     if (contentType.includes('application/json')) {
       const json = await res.json()
-      // Handle { summary: "..." } or { success: true, data: { summary: "..." } } or plain string
       if (typeof json === 'string') return { summary: json }
-      if (json.data?.summary) return { summary: json.data.summary }
+      // Unwrap { success, data: "..." } or { success, data: { summary: "..." } }
+      if (json.data) {
+        if (typeof json.data === 'string') return { summary: json.data }
+        if (json.data.summary) return { summary: json.data.summary }
+      }
       if (json.summary) return { summary: json.summary }
       return { summary: typeof json === 'object' ? JSON.stringify(json) : String(json) }
     }
-    // Plain text response
     const text = await res.text()
     return { summary: text }
   },
