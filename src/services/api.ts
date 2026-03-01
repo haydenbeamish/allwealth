@@ -79,15 +79,44 @@ export async function streamSSE(
 }
 
 /**
+ * Map from the camelCase keys the backend returns (e.g. `globalMarkets`) to
+ * the display-name keys the frontend CATEGORIES array uses (e.g. `Global Markets`).
+ */
+const CATEGORY_KEY_MAP: Record<string, string> = {
+  globalMarkets: 'Global Markets',
+  futures: 'Futures',
+  commodities: 'Commodities',
+  usaThematics: 'USA Thematics',
+  usaSectors: 'USA Sectors',
+  usaEqualWeightSectors: 'USA Equal Weight Sectors',
+  asxSectors: 'ASX Sectors',
+  forex: 'Forex',
+}
+
+/**
+ * Normalise category keys: if a key exists in CATEGORY_KEY_MAP, rename it.
+ * Keys already in display-name form (or unknown) are kept as-is.
+ */
+function normaliseKeys(cats: Record<string, unknown[]>): Record<string, unknown[]> {
+  const out: Record<string, unknown[]> = {}
+  for (const [k, v] of Object.entries(cats)) {
+    out[CATEGORY_KEY_MAP[k] ?? k] = v
+  }
+  return out
+}
+
+/**
  * Extract a Record<string, unknown[]> of market categories from an unknown API
  * response. The API may return any of these shapes:
  *   1. { success, data: { categories: { "Global Markets": [...], … } } }
  *   2. { success, data: { "Global Markets": [...], … } }
  *   3. { categories: { "Global Markets": [...], … } }
  *   4. { "Global Markets": [...], … }           (flat object)
- *   5. [ { ticker, category, … }, … ]           (flat array – /api/markets)
+ *   5. { globalMarkets: [...], futures: [...] }  (camelCase keys from /markets/full)
+ *   6. [ { ticker, category, … }, … ]           (flat array – /api/markets)
  *
- * Returns null when nothing usable is found.
+ * Returns null when nothing usable is found.  Keys are normalised to their
+ * display names (e.g. `globalMarkets` → `Global Markets`).
  */
 function extractCategories(raw: unknown): Record<string, unknown[]> | null {
   if (!raw || typeof raw !== 'object') return null
@@ -106,7 +135,7 @@ function extractCategories(raw: unknown): Record<string, unknown[]> | null {
         ;(grouped[cat] ??= []).push(item)
       }
     }
-    return Object.keys(grouped).length > 0 ? grouped : null
+    return Object.keys(grouped).length > 0 ? normaliseKeys(grouped) : null
   }
 
   // Unwrap `{ success, data: … }` envelope (one or two levels deep)
@@ -123,7 +152,7 @@ function extractCategories(raw: unknown): Record<string, unknown[]> | null {
 
   // `{ categories: { … } }` wrapper
   if (payload.categories && typeof payload.categories === 'object' && !Array.isArray(payload.categories)) {
-    return payload.categories as Record<string, unknown[]>
+    return normaliseKeys(payload.categories as Record<string, unknown[]>)
   }
 
   // The payload itself might be the categories map – check for at least one
@@ -135,7 +164,7 @@ function extractCategories(raw: unknown): Record<string, unknown[]> | null {
     for (const [k, v] of Object.entries(payload)) {
       if (Array.isArray(v)) cats[k] = v
     }
-    return Object.keys(cats).length > 0 ? cats : null
+    return Object.keys(cats).length > 0 ? normaliseKeys(cats) : null
   }
 
   return null
