@@ -1,8 +1,20 @@
 const API_BASE = '/api'
 
+function getHeaders(extra?: Record<string, string>): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Accept': 'application/json',
+    ...extra,
+  }
+  const apiKey = import.meta.env.VITE_API_KEY
+  if (apiKey) {
+    headers['X-API-Key'] = apiKey
+  }
+  return headers
+}
+
 export async function fetchJSON<T>(endpoint: string): Promise<T> {
   const res = await fetch(`${API_BASE}${endpoint}`, {
-    headers: { 'Accept': 'application/json' },
+    headers: getHeaders(),
   })
   if (!res.ok) throw new Error(`API error: ${res.status}`)
   return res.json()
@@ -11,14 +23,14 @@ export async function fetchJSON<T>(endpoint: string): Promise<T> {
 export async function streamSSE(
   endpoint: string,
   body: Record<string, unknown>,
-  onEvent: (event: { type: string; data: unknown }) => void,
+  onEvent: (event: Record<string, unknown>) => void,
   onDone: () => void,
   onError?: (err: Error) => void
 ): Promise<void> {
   try {
     const res = await fetch(`${API_BASE}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(body),
     })
 
@@ -55,14 +67,49 @@ export async function streamSSE(
 }
 
 export const marketsApi = {
-  getFull: () => fetchJSON<{ categories: Record<string, unknown[]> }>('/markets/full'),
-  getSummary: () => fetchJSON<{ summary: string }>('/markets/summary'),
-  getOvernightSummary: () => fetchJSON<{ summary: string }>('/markets/overnight-summary'),
+  getFull: async () => {
+    const raw = await fetchJSON<Record<string, unknown>>('/markets/full')
+    // Handle both { categories: {...} } and flat { "Global Markets": [...], ... } shapes
+    if (raw.categories && typeof raw.categories === 'object') {
+      return raw as { categories: Record<string, unknown[]> }
+    }
+    // If the response IS the categories directly (no wrapper)
+    return { categories: raw as Record<string, unknown[]> }
+  },
+  getSummary: async () => {
+    const res = await fetch(`${API_BASE}/markets/summary`, {
+      headers: getHeaders(),
+    })
+    if (!res.ok) throw new Error(`API error: ${res.status}`)
+    const contentType = res.headers.get('content-type') || ''
+    if (contentType.includes('application/json')) {
+      const json = await res.json()
+      // Handle { summary: "..." } or { success: true, data: { summary: "..." } } or plain string
+      if (typeof json === 'string') return { summary: json }
+      if (json.data?.summary) return { summary: json.data.summary }
+      if (json.summary) return { summary: json.summary }
+      return { summary: typeof json === 'object' ? JSON.stringify(json) : String(json) }
+    }
+    // Plain text response
+    const text = await res.text()
+    return { summary: text }
+  },
 }
 
 export const stockApi = {
-  search: (q: string) => fetchJSON<unknown[]>(`/ticker-search?q=${encodeURIComponent(q)}`),
-  quickSummary: (ticker: string) => fetchJSON(`/stock/quick-summary/${encodeURIComponent(ticker)}`),
+  search: async (q: string) => {
+    const raw = await fetchJSON<Record<string, unknown>>(`/ticker-search?q=${encodeURIComponent(q)}`)
+    // API returns { results: [...] } per the reference
+    if (Array.isArray(raw)) return raw
+    if (Array.isArray(raw.results)) return raw.results
+    return []
+  },
+  quickSummary: async (ticker: string) => {
+    const raw = await fetchJSON<Record<string, unknown>>(`/stock/quick-summary/${encodeURIComponent(ticker)}`)
+    // API returns { success: true, data: { ... } } per the reference
+    if (raw.success && raw.data) return raw.data
+    return raw
+  },
 }
 
 export const analysisApi = {
@@ -71,7 +118,7 @@ export const analysisApi = {
     ticker: string,
     mode: string,
     model: string,
-    onEvent: (event: { type: string; data: unknown }) => void,
+    onEvent: (event: Record<string, unknown>) => void,
     onDone: () => void,
     onError?: (err: Error) => void
   ) => streamSSE('/fundamental-analysis/analyze/stream', { ticker, mode, model }, onEvent, onDone, onError),
