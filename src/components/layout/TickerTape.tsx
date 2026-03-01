@@ -35,12 +35,12 @@ export default function TickerTape() {
     const fetchTickers = async () => {
       try {
         const data = await marketsApi.getFull()
-        const globalItems = data?.categories?.['Global Markets'] || []
-        if (Array.isArray(globalItems) && globalItems.length > 0) {
-          const mapped: TickerItem[] = (globalItems as Record<string, unknown>[]).slice(0, 14).map((item) => ({
-            name: item.name as string || item.ticker as string,
-            price: Number(item.lastPrice) || 0,
-            change: Number(item.chgDay) || 0,
+        const globalItems = data?.globalMarkets || []
+        if (globalItems.length > 0) {
+          const mapped: TickerItem[] = globalItems.slice(0, 14).map((item) => ({
+            name: item.name,
+            price: item.price || 0,
+            change: item.change1D || 0,
           }))
 
           // Flash detection
