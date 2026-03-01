@@ -14,27 +14,42 @@ import {
   TrendingUp,
   Calculator,
   Landmark,
+  LayoutDashboard,
+  Layers,
+  ShieldCheck,
+  PieChart,
+  Target,
+  FolderOpen,
+  MessageSquare,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useRole } from '@/hooks/useRole'
 import RoleSwitcher from './RoleSwitcher'
 
 const advisorNav = [
+  { to: '/advisor/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/advisor/markets', icon: BarChart3, label: 'Markets' },
   { to: '/advisor/analysis', icon: Search, label: 'Company Analysis' },
   { to: '/advisor/portfolios', icon: Briefcase, label: 'Client Portfolios' },
+  { to: '/advisor/models', icon: Layers, label: 'Model Portfolios' },
   { to: '/advisor/wraps', icon: Newspaper, label: 'Market Wraps' },
   { to: '/advisor/plans', icon: FileText, label: 'Financial Plans' },
+  { to: '/advisor/compliance', icon: ShieldCheck, label: 'Compliance' },
   { to: '/advisor/analyst', icon: Bot, label: 'AI Analyst' },
 ]
 
 const clientNav = [
+  { to: '/client/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/client/wealth', icon: Wallet, label: 'Net Wealth' },
   { to: '/client/banking', icon: Building2, label: 'Bank Feeds' },
   { to: '/client/cashflow', icon: ArrowUpDown, label: 'Cash Flow' },
   { to: '/client/performance', icon: TrendingUp, label: 'Performance' },
+  { to: '/client/attribution', icon: PieChart, label: 'Attribution' },
   { to: '/client/tax', icon: Calculator, label: 'Tax Estimates' },
   { to: '/client/holdings', icon: Landmark, label: 'Private Holdings' },
+  { to: '/client/goals', icon: Target, label: 'Goals' },
+  { to: '/client/documents', icon: FolderOpen, label: 'Documents' },
+  { to: '/client/messages', icon: MessageSquare, label: 'Messages' },
 ]
 
 export default function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {

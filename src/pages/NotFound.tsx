@@ -6,7 +6,7 @@ import { useRole } from '@/hooks/useRole'
 export default function NotFound() {
   const navigate = useNavigate()
   const { role } = useRole()
-  const homePath = role === 'advisor' ? '/advisor/markets' : '/client/wealth'
+  const homePath = role === 'advisor' ? '/advisor/dashboard' : '/client/dashboard'
 
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
