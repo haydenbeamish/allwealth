@@ -7,6 +7,9 @@ import NotFound from './pages/NotFound'
 import AdvisorLogin from './pages/auth/AdvisorLogin'
 import ClientLogin from './pages/auth/ClientLogin'
 
+// Private pages
+import PitchDeck from './pages/PitchDeck'
+
 // Advisor pages
 import AdvisorDashboard from './pages/advisor/AdvisorDashboard'
 import MarketDashboard from './pages/advisor/MarketDashboard'
@@ -42,6 +45,9 @@ export default function App() {
       {/* Login pages — outside AppLayout */}
       <Route path="/login/advisor" element={<AdvisorLogin />} />
       <Route path="/login/client" element={<ClientLogin />} />
+
+      {/* Private pages — outside AppLayout */}
+      <Route path="/deck" element={<PitchDeck />} />
 
       <Route element={<AppLayout />}>
         <Route path="/" element={<RoleRedirect />} />
