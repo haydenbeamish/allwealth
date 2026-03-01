@@ -346,7 +346,10 @@ export default function MarketDashboard() {
               <div className="skeleton h-4 w-4/6" />
             </div>
           ) : summary ? (
-            <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{summary}</p>
+            <div
+              className="text-sm text-slate-700 leading-relaxed whitespace-pre-line [&_b]:font-semibold [&_strong]:font-semibold"
+              dangerouslySetInnerHTML={{ __html: summary }}
+            />
           ) : (
             <p className="text-sm text-slate-400 italic">Market summary unavailable.</p>
           )}
