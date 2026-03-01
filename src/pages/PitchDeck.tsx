@@ -34,6 +34,7 @@ import {
   Gem,
   Pickaxe,
   Rocket,
+  Bitcoin,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -480,7 +481,74 @@ function ToolsBuiltSlide() {
   )
 }
 
-// ─── Slide 6: Opportunity ─────────────────────────────────────────────────────
+// ─── Slide 6: Growth Pipeline ─────────────────────────────────────────────────
+
+const pipelineItems = [
+  {
+    title: 'Stock Trading',
+    desc: 'Direct trade execution through the platform. Integrated order management for advisors with best-execution workflows.',
+    icon: TrendingUp,
+    color: 'text-teal-400 bg-teal-500/15',
+  },
+  {
+    title: 'Crypto Integration',
+    desc: 'Algo-based crypto strategies clients can invest in. Automated allocation, rebalancing, and performance tracking.',
+    icon: Bitcoin,
+    color: 'text-amber-400 bg-amber-500/15',
+  },
+  {
+    title: 'MDA Platform',
+    desc: "Managed Discretionary Account platform powered by Endeavor's license. Scalable managed portfolios for advisors — a largely unserved market in Australia.",
+    icon: Landmark,
+    color: 'text-indigo-400 bg-indigo-500/15',
+  },
+]
+
+function GrowthPipelineSlide() {
+  return (
+    <SlideWrapper dark>
+      <div className="relative z-10 max-w-5xl w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
+          <SlideBadge dark>Growth Pipeline</SlideBadge>
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4">Next Revenue Layers</h2>
+          <p className="text-lg text-slate-400">
+            Three platform expansions. Each unlocks a new revenue stream.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {pipelineItems.map((item, i) => {
+            const Icon = item.icon
+            return (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="bg-white/5 border border-white/10 rounded-2xl p-6"
+              >
+                <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center mb-4', item.color)}>
+                  <Icon className="w-6 h-6" />
+                </div>
+                <p className="text-base font-bold text-white mb-3">{item.title}</p>
+                <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </SlideWrapper>
+  )
+}
+
+// ─── Slide 7: Opportunity ─────────────────────────────────────────────────────
 
 const tiers = [
   {
@@ -756,7 +824,7 @@ function WhySlide() {
 
 // ─── Navigation Dots ──────────────────────────────────────────────────────────
 
-const slideNames = ['Intro', 'Model', 'Track Record', 'Product', 'Built', 'Opportunity', 'Financials', 'Why']
+const slideNames = ['Intro', 'Model', 'Track Record', 'Product', 'Built', 'Pipeline', 'Opportunity', 'Financials', 'Why']
 
 function NavDots({ active, onNav }: { active: number; onNav: (i: number) => void }) {
   return (
@@ -826,9 +894,10 @@ export default function PitchDeck() {
       <div ref={setRef(2)}><InvestmentsSlide /></div>
       <div ref={setRef(3)}><ProductSlide /></div>
       <div ref={setRef(4)}><ToolsBuiltSlide /></div>
-      <div ref={setRef(5)}><OpportunitySlide /></div>
-      <div ref={setRef(6)}><FinancialSlide /></div>
-      <div ref={setRef(7)}><WhySlide /></div>
+      <div ref={setRef(5)}><GrowthPipelineSlide /></div>
+      <div ref={setRef(6)}><OpportunitySlide /></div>
+      <div ref={setRef(7)}><FinancialSlide /></div>
+      <div ref={setRef(8)}><WhySlide /></div>
     </div>
   )
 }
