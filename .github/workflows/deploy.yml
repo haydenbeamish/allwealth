@@ -14,10 +14,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        id: node
         with:
           node-version: 20
-          cache: npm
-      - run: npm ci
+      # Restore node_modules whole and skip npm ci on a hit. Keyed on the
+      # lockfile and the exact Node version so native modules never cross ABIs.
+      - name: Cache node_modules
+        id: deps
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: deps-${{ runner.os }}-${{ runner.arch }}-node${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies
+        if: steps.deps.outputs.cache-hit != 'true'
+        run: npm ci
       - run: npm run build
         env:
           VITE_API_URL: https://api.laserbeamcapital.com/api
